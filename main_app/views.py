@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Book
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from .forms import ChapterForm
 
 
 
@@ -21,7 +22,19 @@ def book_index(request):
 
 def book_detail(request, book_id):
   book = Book.objects.get(id=book_id)
-  return render(request, 'books/detail.html', { 'book': book })
+  chapter_form = ChapterForm()
+  return render(request, 'books/detail.html', { 'book': book, 'chapter': chapter_form })
+
+
+def add_chapter(request, book_id):
+  form = ChapterForm(request.POST)
+  # validate the form
+  if form.is_valid():
+   #add foreign key to chapter
+    new_chapter = form.save(commit=False)
+    new_chapter.book_id = book_id
+    new_chapter.save()
+  return redirect('detail', book_id=book_id)
 
 class BookCreate(CreateView):
   model = Book
