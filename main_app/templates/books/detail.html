@@ -42,6 +42,55 @@
     </div>
   </div>
 </div>
+<!-- The below is for bookmarks-->
+  <hr>
+  <div class="row">
+    <div class="col s6">
+      <h3>Associated Bookmarks </h3>
+      {% if book.bookmark.count %}
+        {% for bm in book.bookmark.all %}
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">
+                Bookmark <span style="color: {{ bm.color }}">{{ bm.color }}</span> made of  {{ bm.material }}
+              </span>
+            </div>
+            <div class="card-action">
+              <form action="{% url 'unassoc_bookmark' book.id bm.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn">Remove</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <h5>No Bookmarks yet</h5>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col s6">
+    <h3>Available Bookmarks</h3>
+    {% if bookmarks.count %}
+      {% for bm in bookmarks.all %}
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">
+              Bookmark <span style="color: {{ bm.color }}">{{ bm.color }}</span> made of  {{ bm.material }}
+            </span>
+          </div>
+          <div class="card-action">
+            <form action="{% url 'assoc_bookmark' book.id bm.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn">Add</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h5>{{book.title}} Already Has All Bookmarks Available</h5>
+    {% endif %}
+  </div>
+  
 
 <script>
   const dateEl = document.getElementById('id_date');
